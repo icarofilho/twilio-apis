@@ -1,0 +1,15 @@
+{
+  "name": "test-twilio",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19",
+    "twilio": "^3.79.0"
+  },
+  "scripts": {
+    "dev": "nodemon index.js"
+  }
+}
