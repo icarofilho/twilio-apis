@@ -10,6 +10,7 @@ const client = require("twilio")(accountSid, authToken);
 
 app.use(express.json());
 app.use(router);
+
 //todo Nome de cada Agente
 app.get("/router1", (_, res) => {
   try {
@@ -50,17 +51,17 @@ app.get("/router2", (_, res) => {
 
 app.get("/test", (_, res) => {
   client.chat.v1
-    .services("IS952cd3fea4934cc8b179b95017a112e3")
+    .services("IS978e6e7be5d846d98600829417b03ca5")
     .channels.list()
     .then((channels) => channels.forEach((c) => console.log(c)));
 
   return res.json({ msg: "the end test" });
 });
 
-app.get("/worker", (_, res) => {
-  const worker_sid = client.taskrouter.v1
+app.get("/worker", async (_, res) => {
+  const worker_sid = await client.taskrouter.v1
     .workspaces(process.env.TWILIO_WORKSPACE_SID)
-    .workers(process.env.TWILIO_WORKER_SID)
+    .workers(process.env.TWILIO_WORKER_2)
     .reservations.list({ limit: 20 })
     .then((reservations) => reservations.forEach((r) => console.log(r)));
   console.log(worker_sid);
@@ -171,6 +172,7 @@ app.post("/update", async (req, res) => {
 }); */
 
 app.get("/activity", (_, res) => {
+  // retorna os status e seus Sids
   client.taskrouter.v1
     .workspaces(process.env.TWILIO_WORKSPACE_SID)
     .activities.list({ limit: 20 })
@@ -194,13 +196,14 @@ app.get("/worker-create", async (req, res) => {
 app.get("/worker-fetch", async (_, res) => {
   await client.taskrouter.v1
     .workspaces(process.env.TWILIO_WORKSPACE_SID)
-    .workers(process.env.TWILIO_WORKER_IC)
+    .workers(process.env.TWILIO_WORKER_1)
     .fetch()
     .then((worker) => console.log(worker));
   return res.json({ msg: "the end" });
 });
 
 app.get("/worker-list", async (_, res) => {
+  // retorna todos os workers em determinada fila
   await client.taskrouter.v1
     .workspaces(process.env.TWILIO_WORKSPACE_SID)
     .workers.list({ taskQueueSid: "WQ3c1559d67b8123d545b6f0c21f4532e6" })

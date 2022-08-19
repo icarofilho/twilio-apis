@@ -5,6 +5,7 @@ const client = require("twilio")(accountSid, authToken);
 
 module.exports = {
   async create(req, res) {
+    // ! Cria um worker
     try {
       const { name, friendlyName } = req.body;
       await client.taskrouter.v1
@@ -20,7 +21,7 @@ module.exports = {
   },
 
   async fetch(req, res) {
-    // retorna o activity do worker
+    //! retorna o activity do worker
     try {
       const { activitySid } = req.query;
       const worker = {
