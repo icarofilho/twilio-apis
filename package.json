@@ -10,6 +10,6 @@
     "twilio": "^3.79.0"
   },
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon src/index.js"
   }
 }

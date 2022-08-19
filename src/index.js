@@ -1,15 +1,15 @@
-const express = require("express");
-
-const app = express();
-
 require("dotenv").config();
+
+const express = require("express");
+const router = require("./routes");
+const app = express();
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
 
 app.use(express.json());
-
+app.use(router);
 //todo Nome de cada Agente
 app.get("/router1", (_, res) => {
   try {
@@ -161,14 +161,14 @@ app.post("/update", async (req, res) => {
   }
 });
 
-app.get("/fetch", (_, res) => {
+/* app.get("/fetch", (_, res) => {
   client.taskrouter.v1
     .workspaces(process.env.TWILIO_WORKSPACE_SID)
     .activities("WAf1e54c5b08b0ceb979798a547b2e6c26")
     .fetch()
     .then((activity) => console.log(activity));
   return res.json({ msg: "the end" });
-});
+}); */
 
 app.get("/activity", (_, res) => {
   client.taskrouter.v1
@@ -206,6 +206,39 @@ app.get("/worker-list", async (_, res) => {
     .workers.list({ taskQueueSid: "WQ3c1559d67b8123d545b6f0c21f4532e6" })
     .then((workers) => workers.forEach((w) => console.log(w)));
   return res.json({ msg: "the end" });
+});
+
+app.get("/send-not", async (req, res) => {
+  try {
+    const obj = { info: "" };
+    await client.chat
+      .services(process.env.TWILIO_CHAT_SID)
+      .update({
+        "notifications.addedToChannel.enabled": true,
+        "notifications.addedToChannel.sound": "default",
+        "notifications.addedToChannel.template":
+          "A New message in ${CHANNEL} from ${USER}: ${MESSAGE}",
+      })
+      .then((service) => {
+        obj.info = service;
+        console.log(service);
+      });
+    return res.json({ msg: obj.name });
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
+});
+
+app.get("/service", async (req, res) => {
+  const obj = { info: "" };
+  await client.chat.v2
+    .services(process.env.TWILIO_CHAT_SID)
+    .fetch()
+    .then((service) => {
+      obj.info = service;
+      console.log(service.friendlyName);
+    });
+  return res.json({ msg: obj.info });
 });
 
 app.listen(3333, () => console.log("Server started on port 3333"));
