@@ -193,14 +193,14 @@ app.get("/worker-create", async (req, res) => {
   return res.json({ worker });
 });
 
-app.get("/worker-fetch", async (_, res) => {
+/* app.get("/worker-fetch", async (_, res) => {
   await client.taskrouter.v1
     .workspaces(process.env.TWILIO_WORKSPACE_SID)
     .workers(process.env.TWILIO_WORKER_1)
     .fetch()
     .then((worker) => console.log(worker));
   return res.json({ msg: "the end" });
-});
+}); */
 
 app.get("/worker-list", async (_, res) => {
   // retorna todos os workers em determinada fila
